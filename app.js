@@ -5,7 +5,7 @@ const bodyParser = require('body-parser');
 
 const errorController = require('./controllers/error');
 
-const db = require('./util/database.js');
+const sequelize = require('./util/database.js');    //sequlize is an object importing from database.js
 
 const app = express();
 
@@ -14,15 +14,7 @@ app.set('views', 'views');
 
 const adminRoutes = require('./routes/admin');
 const shopRoutes = require('./routes/shop');
-const { error } = require('console');
 
-// db.execute('SELECT * FROM Products')
-// .then(result => {
-//     console.log(result);
-// })
-// .catch(err => {
-//     console.log(err);
-// });
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'public')));
@@ -32,4 +24,10 @@ app.use(shopRoutes);
 
 app.use(errorController.get404);
 
-app.listen(3000);
+sequelize.sync()
+.then( result => {
+    app.listen(3000);
+})
+.catch(err => console.log(err));
+
+
